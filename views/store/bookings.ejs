@@ -1,0 +1,167 @@
+<%- include('../partials/head')%>
+
+<body class="bg-gradient-to-br from-gray-50 via-white to-red-50 min-h-screen">
+
+    <%- include('../partials/nav')%>
+
+    <main class="container mx-auto px-6 py-10 max-w-5xl">
+
+        <!-- Heading -->
+        <div class="text-center mb-10">
+
+            <h2 class="text-5xl font-bold text-gray-900 mb-3">
+                My Bookings
+            </h2>
+
+            <% if (locals.sessionUser) { %>
+                <p class="text-lg text-gray-500">
+                    Welcome back,
+                    <span class="font-semibold text-red-500">
+                        <%= sessionUser.name %>
+                    </span>
+                    👋
+                </p>
+            <% } %>
+
+        </div>
+
+        <!-- No Bookings -->
+        <% if(bookings.length === 0) { %>
+
+            <div class="bg-white rounded-[32px] shadow-xl border border-gray-100 p-12 text-center">
+
+                <div class="text-7xl mb-5">
+                    🏠
+                </div>
+
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">
+                    No Bookings Yet
+                </h3>
+
+                <p class="text-gray-500 mb-8">
+                    Start exploring beautiful homes and make your first booking.
+                </p>
+
+                <a
+                    href="/homes"
+                    class="inline-block bg-red-500 text-white px-8 py-4 rounded-2xl font-semibold shadow-lg hover:bg-red-600 hover:shadow-xl transition-all duration-300">
+                    Explore Homes
+                </a>
+
+            </div>
+
+        <% } else { %>
+
+            <div class="space-y-8">
+
+                <% bookings.forEach(booking => { %>
+
+                    <div class="bg-white rounded-[32px] shadow-xl border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300">
+
+                        <div class="flex flex-col md:flex-row">
+
+                            <!-- Home Image -->
+                            <div class="md:w-80 flex-shrink-0">
+
+                                <img
+                                    src="<%= booking.photoUrl %>"
+                                    alt="<%= booking.houseName %>"
+                                    class="w-full h-72 md:h-full object-cover"
+                                >
+
+                            </div>
+
+                            <!-- Details -->
+                            <div class="flex-1 p-8 flex flex-col justify-between">
+
+                                <div>
+
+                                    <div class="flex justify-between items-start mb-4">
+
+                                        <h3 class="text-3xl font-bold text-gray-900">
+                                            <%= booking.houseName %>
+                                        </h3>
+
+                                        <span class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold">
+                                            Confirmed
+                                        </span>
+
+                                    </div>
+
+                                    <p class="text-gray-500 text-lg mb-6">
+                                        📍 <%= booking.location %>
+                                    </p>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                                        <div class="bg-gray-50 rounded-2xl p-4">
+                                            <p class="text-gray-400 text-sm mb-1">
+                                                Check In
+                                            </p>
+                                            <p class="font-semibold text-gray-800">
+                                                <%= booking.checkIn %>
+                                            </p>
+                                        </div>
+
+                                        <div class="bg-gray-50 rounded-2xl p-4">
+                                            <p class="text-gray-400 text-sm mb-1">
+                                                Check Out
+                                            </p>
+                                            <p class="font-semibold text-gray-800">
+                                                <%= booking.checkOut %>
+                                            </p>
+                                        </div>
+
+                                        <div class="bg-gray-50 rounded-2xl p-4">
+                                            <p class="text-gray-400 text-sm mb-1">
+                                                Total Nights
+                                            </p>
+                                            <p class="font-semibold text-gray-800">
+                                                <%= booking.totalNights %>
+                                            </p>
+                                        </div>
+
+                                        <div class="bg-red-50 rounded-2xl p-4">
+                                            <p class="text-red-400 text-sm mb-1">
+                                                Total Price
+                                            </p>
+                                            <p class="font-bold text-red-500 text-xl">
+                                                ₹<%= booking.totalPrice %>
+                                            </p>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Cancel Button -->
+                                <form
+                                    action="/bookings/delete/<%= booking._id %>"
+                                    method="POST"
+                                    class="mt-8">
+
+                                    <button
+                                        type="submit"
+                                        class="bg-red-500 text-white px-8 py-3 rounded-2xl font-semibold shadow-lg hover:bg-red-600 hover:shadow-xl transition-all duration-300">
+                                        Cancel Booking
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                <% }) %>
+
+            </div>
+
+        <% } %>
+
+    </main>
+
+</body>
+
+</html>

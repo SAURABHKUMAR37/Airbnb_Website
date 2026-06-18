@@ -1,0 +1,19 @@
+<form action="/favourite" method = "POST">
+    <button 
+        type="submit"
+        style="
+            background-color:#22c55e;   
+            color:white;                
+            padding:10px 20px;         
+            border:none;                
+            border-radius:6px;          
+            cursor:pointer;             
+            font-size:16px;             
+        "
+        onmouseover="this.style.backgroundColor='#15803d'"
+        onmouseout="this.style.backgroundColor='#22c55e'"
+    >
+        Add to favourite
+    </button>
+    <input type="hidden" name ="id" value ="<%= home._id %>">
+</form>

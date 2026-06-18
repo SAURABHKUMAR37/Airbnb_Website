@@ -1,0 +1,248 @@
+<%- include('../partials/head')%>
+
+<body class="bg-gray-50">
+
+    <%- include('../partials/nav')%>
+
+    <main class="container mx-auto px-6 py-10">
+
+        <div class="max-w-6xl mx-auto bg-white rounded-[32px] shadow-xl border border-gray-100 overflow-hidden">
+
+            <div class="grid grid-cols-1 lg:grid-cols-2">
+
+                <!-- Image Gallery -->
+                <div class="h-[450px] lg:h-[600px] bg-gray-100 overflow-hidden relative">
+
+                    <% const galleryPhotos = (home.photos && home.photos.length > 0) ? home.photos : [home.photoUrl]; %>
+
+                    <% galleryPhotos.forEach((photo, index) => { %>
+                        <img
+                            src="<%= photo %>"
+                            alt="<%= home.houseName %>"
+                            class="gallery-img w-full h-full object-cover absolute top-0 left-0 transition-all duration-700"
+                            style="opacity: <%= index === 0 ? 1 : 0 %>;"
+                        >
+                    <% }) %>
+
+                    <% if (galleryPhotos.length > 1) { %>
+
+                        <button
+                            onclick="changePhoto(-1)"
+                            class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-md text-gray-800 w-10 h-10 rounded-full shadow-lg hover:bg-white transition">
+                            ❮
+                        </button>
+
+                        <button
+                            onclick="changePhoto(1)"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-md text-gray-800 w-10 h-10 rounded-full shadow-lg hover:bg-white transition">
+                            ❯
+                        </button>
+
+                        <div class="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
+                            <% galleryPhotos.forEach((_, index) => { %>
+                                <div class="dot w-3 h-3 rounded-full <%= index === 0 ? 'bg-white' : 'bg-gray-400' %>"></div>
+                            <% }) %>
+                        </div>
+
+                    <% } %>
+
+                </div>
+
+                <!-- Home Info -->
+                <div class="p-8 lg:p-10 flex flex-col justify-center">
+
+                    <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight mb-4">
+                        <%= home.houseName %>
+                    </h2>
+
+                    <p class="text-gray-500 text-lg mb-4">
+                        📍
+                        <span class="font-medium text-gray-800">
+                            <%= home.location %>
+                        </span>
+                    </p>
+
+                    <div class="inline-flex items-center bg-yellow-50 text-yellow-700 px-4 py-2 rounded-full mb-6 w-fit">
+                        ⭐
+                        <span class="font-bold ml-2">
+                            <%= ratingInfo.avgRating %>
+                        </span>
+                        <span class="text-gray-500 ml-2">
+                            (<%= ratingInfo.totalReviews %> reviews)
+                        </span>
+                    </div>
+
+                    <p class="text-4xl font-bold text-red-500 mb-8">
+                        ₹<%= home.price %>
+                        <span class="text-lg text-gray-500 font-normal">
+                            / night
+                        </span>
+                    </p>
+
+                    <div class="flex flex-col gap-4 sm:flex-row">
+
+                        <a
+                            href="/reserve/<%= home._id %>"
+                            class="flex-1 bg-red-500 text-white px-6 py-4 rounded-2xl text-center font-semibold shadow-lg hover:bg-red-600 hover:scale-[1.02] transition-all duration-300">
+                            Book Now
+                        </a>
+
+                    </div>
+
+                    <div class="mt-4">
+                        <%- include('../partials/favourite') %>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Review Form -->
+        <div class="max-w-6xl mx-auto mt-8 bg-white rounded-[32px] shadow-xl border border-gray-100 p-8">
+
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                Leave a Review
+            </h3>
+
+            <% if (locals.query && query.error === 'already_reviewed') { %>
+
+                <div class="bg-red-50 text-red-600 p-4 rounded-2xl mb-6 text-center border border-red-100">
+                    ⚠️ You have already reviewed this home!
+                </div>
+
+            <% } %>
+
+            <% if (locals.sessionUser) { %>
+
+                <form action="/homes/<%= home._id %>/review" method="POST">
+
+                    <div class="mb-5">
+
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            Rating (1-10)
+                        </label>
+
+                        <input
+                            type="number"
+                            name="rating"
+                            min="1"
+                            max="10"
+                            required
+                            placeholder="Enter rating 1-10"
+                            class="w-full border border-gray-200 rounded-2xl p-4 focus:outline-none focus:ring-2 focus:ring-red-400"
+                        >
+
+                    </div>
+
+                    <div class="mb-5">
+
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            Comment
+                        </label>
+
+                        <textarea
+                            name="comment"
+                            rows="4"
+                            required
+                            placeholder="Share your experience..."
+                            class="w-full border border-gray-200 rounded-2xl p-4 focus:outline-none focus:ring-2 focus:ring-red-400"
+                        ></textarea>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="bg-red-500 text-white px-8 py-3 rounded-2xl font-semibold hover:bg-red-600 transition">
+                        Submit Review ⭐
+                    </button>
+
+                </form>
+
+            <% } else { %>
+
+                <p class="text-gray-500">
+                    <a href="/login" class="text-red-500 font-bold hover:underline">
+                        Login
+                    </a>
+                    to leave a review.
+                </p>
+
+            <% } %>
+
+        </div>
+
+        <!-- Reviews -->
+        <div class="max-w-6xl mx-auto mt-8 bg-white rounded-[32px] shadow-xl border border-gray-100 p-8">
+
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                Reviews (<%= reviews.length %>)
+            </h3>
+
+            <% if (reviews.length === 0) { %>
+
+                <p class="text-gray-400 text-center">
+                    No reviews yet. Be the first to review!
+                </p>
+
+            <% } else { %>
+
+                <ul class="space-y-5">
+
+                    <% reviews.forEach(review => { %>
+
+                        <li class="border border-gray-100 rounded-2xl p-5 hover:shadow-md transition">
+
+                            <div class="flex justify-between items-center mb-3">
+
+                                <span class="font-semibold text-gray-800">
+                                    👤 <%= review.userName %>
+                                </span>
+
+                                <span class="bg-yellow-50 text-yellow-700 px-3 py-1 rounded-full font-semibold">
+                                    ⭐ <%= review.rating %>/10
+                                </span>
+
+                            </div>
+
+                            <p class="text-gray-600 leading-relaxed">
+                                <%= review.comment %>
+                            </p>
+
+                            <p class="text-gray-400 text-sm mt-3">
+                                <%= new Date(review.createdAt).toLocaleDateString() %>
+                            </p>
+
+                        </li>
+
+                    <% }) %>
+
+                </ul>
+
+            <% } %>
+
+        </div>
+
+    </main>
+
+    <script>
+        let currentIndex = 0;
+        const imgs = document.querySelectorAll('.gallery-img');
+        const dots = document.querySelectorAll('.dot');
+
+        function changePhoto(direction) {
+            imgs[currentIndex].style.opacity = 0;
+            dots[currentIndex].classList.remove('bg-white');
+            dots[currentIndex].classList.add('bg-gray-400');
+
+            currentIndex = (currentIndex + direction + imgs.length) % imgs.length;
+
+            imgs[currentIndex].style.opacity = 1;
+            dots[currentIndex].classList.remove('bg-gray-400');
+            dots[currentIndex].classList.add('bg-white');
+        }
+    </script>
+
+</body>
+</html>
