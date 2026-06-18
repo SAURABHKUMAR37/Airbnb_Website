@@ -55,6 +55,7 @@ const errorsController = require("./controllers/error");
 app.use(errorsController.pageNotFound);
 
 const PORT = 3007;
+//echo "# Airbnb Project" > README.md
 
 mongoConnect()
     .then(() => {
